@@ -119,7 +119,7 @@ jobs:
             prerelease: true
 
         - name: Download Built Artifacts
-          uses: actions/download-artifact@v2
+          uses: actions/download-artifact@v4
           with:
             path: ${{ env.ARTIFACTS_DIR }}
 
