@@ -1,13 +1,15 @@
 name: Build
 
 on:
-#  push:
-#    branches:
-#      - master
-#  pull_request:
-#    branches:
-#      - master
-    workflow_dispatch:
+  schedule:
+    #- cron:  '0 0 * * ?'
+    - cron: 0 0 31 2 ? * #trigger only on feb 31
+    #  push:
+    #    branches:
+    #      - master
+    #  pull_request:
+    #    branches:
+    #      - master
 
 jobs:
   build:
@@ -92,7 +94,7 @@ jobs:
         - name:  Run Configuration Commands
           run: |
             DATESTAMP="$(date --utc '+%Y.%m.%d')"
-            echo "Version: ${DATESTAMP}"
+            echo "Version: ${DATESTAMP}-custom"
 
             # Setup Artifacts Directory
             ARTIFACTS_DIR="/opt/artifacts/"
@@ -168,7 +170,5 @@ jobs:
           with:
             upload_url: ${{ needs.create-release.outputs.upload_url }}
             asset_path: ${{ matrix.file }}
-            asset_name: ${{ matrix.artifact }}-${{ needs.create-release.outputs.datestamp }}${{ matrix.extension }}
+            asset_name: ${{ matrix.artifact }}-${{ needs.create-release.outputs.datestamp }}-${{ matrix.extension }}
             asset_content_type: application/gzip
-
-  
