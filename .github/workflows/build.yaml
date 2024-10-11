@@ -1,21 +1,24 @@
 name: Build
 
-on:
-  push:
-    branches:
-      - master
-  pull_request:
-    branches:
-      - master
+
+workflow_dispatch:
+
+#on:
+#  push:
+#    branches:
+#      - master
+#  pull_request:
+#    branches:
+#      - master
 
 jobs:
   build:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os:     [ubuntu-22.04, ubuntu-24.04]
+        os:     [ubuntu-24.04]
         mode:   [newlib, linux, musl]
-        target: [rv32gc-ilp32d, rv64gc-lp64d]
+        target: [rv64gc-lp64d]
         compiler: [gcc, llvm]
         exclude:
           - mode: musl
@@ -37,8 +40,7 @@ jobs:
 
       - name: build toolchain
         run: |
-          TARGET_TUPLE=($(echo ${{ matrix.target }} | tr "-" "\n"))
-          BUILD_TOOLCHAIN="./configure --prefix=/opt/riscv --with-arch=${TARGET_TUPLE[0]} --with-abi=${TARGET_TUPLE[1]}"
+          BUILD_TOOLCHAIN="./configure --prefix=/opt/riscv"
           if [ "${{ matrix.compiler }}" == "llvm" ]; then # build toolchain with llvm
             $BUILD_TOOLCHAIN --enable-llvm
           else
@@ -107,8 +109,7 @@ jobs:
 
       - name: build toolchain
         run: |
-          TARGET_TUPLE=($(echo ${{ matrix.target }} | tr "-" "\n"))
-          ./configure --prefix=/opt/riscv --with-arch=${TARGET_TUPLE[0]} --with-abi=${TARGET_TUPLE[1]} --with-sim=${{ matrix.sim }}
+          ./configure --prefix=/opt/riscv --with-sim=${{ matrix.sim }}
           make -j $(nproc) ${{ matrix.mode }}
 
       - name: make report
@@ -139,8 +140,7 @@ jobs:
 
       - name: build toolchain
         run: |
-          TARGET_TUPLE=($(echo ${{ matrix.target }} | tr "-" "\n"))
-          ./configure --prefix=/opt/riscv --with-arch=${TARGET_TUPLE[0]} --with-abi=${TARGET_TUPLE[1]} --enable-multilib
+          ./configure --prefix=/opt/riscv --enable-multilib
           sudo make -j $(nproc) ${{ matrix.mode }}
 
       - name: make report
