@@ -1,9 +1,6 @@
 name: Custom Release
 
 on:
-  schedule:
-    #- cron:  '0 0 * * ?'
-    - cron: 0 0 31 2 ? * #trigger only on feb 31
   workflow_dispatch:
 
 jobs:
