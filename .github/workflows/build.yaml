@@ -14,9 +14,15 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
+<<<<<<< HEAD
         os:     [ubuntu-24.04]
         mode:   [newlib, linux, musl, uclibc]
         target: [rv64gc-lp64d]
+=======
+        os:     [ubuntu-22.04, ubuntu-24.04]
+        mode:   [newlib, linux, musl, uclibc]
+        target: [rv32gc-ilp32d, rv64gc-lp64d]
+>>>>>>> fork_parent/master
         compiler: [gcc, llvm]
         exclude:
           - mode: musl
@@ -166,6 +172,16 @@ jobs:
           with:
             name: ${{ matrix.artifact }}
 
+<<<<<<< HEAD
+        - uses: actions/upload-release-asset@v1
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          with:
+            upload_url: ${{ needs.create-release.outputs.upload_url }}
+            asset_path: ${{ matrix.file }}
+            asset_name: ${{ matrix.artifact }}-${{ needs.create-release.outputs.datestamp }}-${{ matrix.extension }}
+            asset_content_type: application/gzip
+=======
       - name: make report
         run: |
           sudo make report-${{ matrix.mode }} -j $(nproc)
@@ -193,3 +209,4 @@ jobs:
         with:
           name: ${{ steps.toolchain-name-generator.outputs.TOOLCHAIN_NAME }}
           path: riscv.tar.gz
+>>>>>>> fork_parent/master
